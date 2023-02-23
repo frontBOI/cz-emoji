@@ -1,10 +1,13 @@
 {
-  "name": "cz-frontboi",
+  "name": "@frontboi/cz-frontboi",
   "version": "1.0.0",
   "description": "Commitizen custom adapter formatting commit messages using emojis.",
   "author": "Tom Blanchet <contact@tomblanchet.fr> (https://tomblanchet.fr)",
   "license": "MIT",
-  "repository": "frontBOI/cz-emoji",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frontBOI/cz-emoji.git"
+  },
   "main": "index.js",
   "engines": {
     "node": ">=4"
@@ -32,5 +35,18 @@
     "prettier": "^1.18.2",
     "read-pkg-up": "^7.0.1",
     "wrap-ansi": "^7.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/frontBOI/cz-emoji/issues"
+  },
+  "homepage": "https://github.com/frontBOI/cz-emoji#readme",
+  "directories": {
+    "lib": "lib"
+  },
+  "devDependencies": {
+    "commitizen": "^4.3.0"
+  },
+  "publishConfig": {
+    "cache": "~/.npm"
   }
 }
