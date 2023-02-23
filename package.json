@@ -21,9 +21,6 @@
   "config": {
     "commitizen": {
       "path": "./index.js"
-    },
-    "cz-frontboi": {
-      "pipi": "caca"
     }
   },
   "dependencies": {
