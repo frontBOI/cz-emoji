@@ -99,14 +99,29 @@ By default, `cz-frontboi` comes bundled with general purpose types.
 If you ever need to add a type, provide it as a JSON object inside the `types` array property (which lives, indeed, inside the `cz-frontboi` property of the top-level `config` property):
 
 ```json
- "types": [
-   {
-     "emoji": "💡",
-     "code": ":bulb:",
-     "description": "Une super nouvelle idée",
-     "name": "Idea"
-   }
- ]
+{
+  "types": [
+    {
+      "emoji": "💡",
+      "code": ":bulb:",
+      "description": "Une super nouvelle idée",
+      "name": "Idea"
+    }
+  ]
+}
+```
+
+You can choose to only keep the types you declared and discard the native ones by setting the `overrideTypes` property to `true`:
+
+```json
+{
+  "config": {
+    "cz-frontboi": {
+      "types": [ "your own types here" ]
+      "overrideTypes": true
+    }
+  }
+}
 ```
 
 #### Skip Questions

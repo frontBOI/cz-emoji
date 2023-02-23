@@ -36,9 +36,9 @@ async function getConfig() {
     scopes: [
       { name: '💻 front', value: 'front' },
       { name: '💾 back', value: 'back' },
-      { name: '📡 CI', value: 'CI' }
+      { name: '📦 CI/CD', value: 'CI/CD' }
     ],
-    format: '{emoji}{type} {scope}: {subject}'
+    format: '{emoji} {type} {scope}: {subject}'
   }
 
   const loadedConfig =
@@ -50,6 +50,9 @@ async function getConfig() {
   const config = {
     ...defaultConfig,
     ...loadedConfig,
+    types: loadedConfig.overrideTypes
+      ? loadedConfig.types ?? []
+      : [...defaultConfig.types, ...(loadedConfig.types ?? [])],
     scopes: [...defaultConfig.scopes, ...(loadedConfig.scopes ?? [])]
   }
 
