@@ -3,10 +3,9 @@ const fs = require('fs')
 const homedir = require('homedir')
 const truncate = require('cli-truncate')
 const wrap = require('wrap-ansi')
-const pad = require('pad')
 const path = require('path')
-const fuse = require('fuse.js')
 const util = require('util')
+const pad = require('pad')
 
 const types = require('./lib/types')
 
@@ -15,7 +14,7 @@ const readFile = util.promisify(fs.readFile)
 function loadConfig(filename) {
   return readFile(filename, 'utf8')
     .then(JSON.parse)
-    .then(obj => obj && obj.config && obj.config['cz-emoji'])
+    .then(obj => obj && obj.config && obj.config['cz-frontboi'])
     .catch(() => null)
 }
 
@@ -23,16 +22,23 @@ function loadConfigUpwards(filename) {
   return findUp(filename).then(loadConfig)
 }
 
+/**
+ * Read the configuration extracted from either the package.json, .czrc or global .czrc files
+ *
+ * @param {Object} config the configuration object if it exists, or an empty object
+ */
 async function getConfig() {
-  const defaultFormat = '{emoji} {scope} {subject}'
-  const conventionalFormat = `{type}{scope}: {emoji} {subject}`
-
   const defaultConfig = {
     types,
     symbol: false,
     skipQuestions: [''],
     subjectMaxLength: 75,
-    conventional: false
+    scopes: [
+      { name: '💻 front', value: 'front' },
+      { name: '💾 back', value: 'back' },
+      { name: '📡 CI', value: 'CI' }
+    ],
+    format: '{emoji}{type} {scope}: {subject}'
   }
 
   const loadedConfig =
@@ -43,10 +49,8 @@ async function getConfig() {
 
   const config = {
     ...defaultConfig,
-    ...{
-      format: loadedConfig.conventional ? conventionalFormat : defaultFormat
-    },
-    ...loadedConfig
+    ...loadedConfig,
+    scopes: [...defaultConfig.scopes, ...(loadedConfig.scopes ?? [])]
   }
 
   return config
@@ -68,10 +72,6 @@ function getEmojiChoices({ types, symbol }) {
   }))
 }
 
-function formatIssues(issues) {
-  return issues ? 'Closes ' + (issues.match(/#\d+/g) || []).join(', closes ') : ''
-}
-
 /**
  * Create inquier.js questions object trying to read `types` and `scopes` from the current project
  * `package.json` falling back to nice default :)
@@ -81,75 +81,35 @@ function formatIssues(issues) {
  * @private
  */
 function createQuestions(config) {
-  const choices = getEmojiChoices(config)
-
-  const fuzzy = new fuse(choices, {
-    shouldSort: true,
-    threshold: 0.4,
-    location: 0,
-    distance: 100,
-    maxPatternLength: 32,
-    minMatchCharLength: 1,
-    keys: ['name', 'code']
-  })
-
-  const questions = [
+  return [
     {
-      type: 'autocomplete',
+      type: 'list',
       name: 'type',
-      message:
-        config.questions && config.questions.type
-          ? config.questions.type
-          : "Select the type of change you're committing:",
-      source: (_, query) => Promise.resolve(query ? fuzzy.search(query) : choices)
+      choices: getEmojiChoices(config),
+      message: config.questions && config.questions.type ? config.questions.type : 'Sélectionne le type de ton commit:'
     },
     {
       type: config.scopes ? 'list' : 'input',
       name: 'scope',
       message:
-        config.questions && config.questions.scope ? config.questions.scope : 'Specify a scope:',
-      choices: config.scopes && [{ name: '[none]', value: '' }].concat(config.scopes),
+        config.questions && config.questions.scope ? config.questions.scope : 'Renseigne le scope de ton commit:',
+      choices: config.scopes.map(scope => scope.name),
       when: !config.skipQuestions.includes('scope')
     },
     {
       type: 'maxlength-input',
       name: 'subject',
-      message:
-        config.questions && config.questions.subject
-          ? config.questions.subject
-          : 'Write a short description:',
+      message: config.questions && config.questions.subject ? config.questions.subject : 'Sujet de ton commit:',
       maxLength: config.subjectMaxLength
     },
     {
       type: 'input',
       name: 'body',
       message:
-        config.questions && config.questions.body
-          ? config.questions.body
-          : 'Provide a longer description:',
+        config.questions && config.questions.body ? config.questions.body : 'Fournis une description pour ton commit:',
       when: !config.skipQuestions.includes('body')
-    },
-    {
-      type: 'input',
-      name: 'breakingBody',
-      message:
-        config.questions && config.questions.breaking
-          ? config.questions.breaking
-          : 'A BREAKING CHANGE commit requires a body. Please enter a longer description of the commit itself:\n',
-      when: !config.skipQuestions.includes('breaking')
-    },
-    {
-      type: 'input',
-      name: 'issues',
-      message:
-        config.questions && config.questions.issues
-          ? config.questions.issues
-          : 'List any issue closed (#1, #2, ...):',
-      when: !config.skipQuestions.includes('issues')
     }
   ]
-
-  return questions
 }
 
 /**
@@ -163,13 +123,13 @@ function createQuestions(config) {
 function formatCommitMessage(answers, config) {
   const { columns } = process.stdout
 
-  const emoji = answers.type
-  const type = config.types.find(type => type.code === emoji.emoji).name
-  const scope = answers.scope ? '(' + answers.scope.trim() + ')' : ''
+  const emoji = config.types.find(type => type.code === answers.type.emoji).emoji
+  const type = answers.type.name
+  const scope = answers.scope ? '(' + config.scopes.find(scope => scope.name === answers.scope).value.trim() + ')' : ''
   const subject = answers.subject.trim()
 
   const commitMessage = config.format
-    .replace(/{emoji}/g, emoji.emoji)
+    .replace(/{emoji}/g, emoji)
     .replace(/{type}/g, type)
     .replace(/{scope}/g, scope)
     .replace(/{subject}/g, subject)
@@ -180,13 +140,8 @@ function formatCommitMessage(answers, config) {
 
   const head = truncate(commitMessage, columns)
   const body = wrap(answers.body || '', columns)
-  const breaking =
-    answers.breakingBody && answers.breakingBody.trim().length !== 0
-      ? wrap(`BREAKING CHANGE: ${answers.breakingBody.trim()}`, columns)
-      : ''
-  const footer = formatIssues(answers.issues)
 
-  return [head, body, breaking, footer]
+  return [head, body]
     .filter(Boolean)
     .join('\n\n')
     .trim()
@@ -199,9 +154,14 @@ function formatCommitMessage(answers, config) {
  * @return {String} Git message provided by the user
  */
 async function promptCommitMessage(cz) {
-  cz.prompt.registerPrompt('autocomplete', require('inquirer-autocomplete-prompt'))
   cz.prompt.registerPrompt('maxlength-input', require('inquirer-maxlength-input-prompt'))
 
+  console.log(`
+  ┬  ┌─┐  ┌─┐┌─┐┌┬┐┌┬┐┬┌┬┐  ┌─┐┬─┐┌─┐┌─┐┬─┐┌─┐
+  │  ├┤   │  │ ││││││││ │   ├─┘├┬┘│ │├─┘├┬┘├┤ 
+  ┴─┘└─┘  └─┘└─┘┴ ┴┴ ┴┴ ┴   ┴  ┴└─└─┘┴  ┴└─└─┘ by frontBOI
+  ⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜
+  `)
   const config = await getConfig()
   const questions = createQuestions(config)
   const answers = await cz.prompt(questions)
