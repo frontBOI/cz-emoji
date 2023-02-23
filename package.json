@@ -1,5 +1,5 @@
 {
-  "name": "@frontboi/cz-frontboi",
+  "name": "@frontboi_dev/cz-frontboi",
   "version": "1.0.0",
   "description": "Commitizen custom adapter formatting commit messages using emojis.",
   "author": "Tom Blanchet <contact@tomblanchet.fr> (https://tomblanchet.fr)",
@@ -30,7 +30,7 @@
     "cli-truncate": "^1.0.0",
     "find-up": "^5.0.0",
     "homedir": "^0.6.0",
-    "inquirer-maxlength-input-prompt": "^1.0.1",
+    "inquirer-maxlength-input->ompt": "^1.0.1",
     "pad": "^2.3.0",
     "prettier": "^1.18.2",
     "read-pkg-up": "^7.0.1",
