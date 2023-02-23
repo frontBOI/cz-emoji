@@ -18,12 +18,6 @@
     "name": "test"
   },
   {
-    "emoji": "🩹",
-    "code": ":adhesive_bandage:",
-    "description": "Quick fix",
-    "name": "adhesive-bandage"
-  },
-  {
     "emoji": "🏷️",
     "code": ":label:",
     "description": "Release / version tags",

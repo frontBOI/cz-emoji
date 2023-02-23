@@ -1,22 +1,34 @@
 # cz-frontboi
 
-> frontBOI's [commitizen] adapter to use custom commit message using emojis
+FrontBOI's [commitizen] adapter is THE way to go to use custom commit message using emojis. _Plus besoin de se prendre la tête en équipe !_
+
+This tool has been explicitely and purposefully made for french people 🇫🇷
 
 ```sh
-? Select the type of change you are committing: (Use arrow keys)
-❯ feature   🌟  A new feature
-  fix       🐞  A bug fix
-  docs      📚  Documentation change
-  refactor  🎨  A code refactoring change
-  chore     🔩  A chore change
+  ┬  ┌─┐  ┌─┐┌─┐┌┬┐┌┬┐┬┌┬┐  ┌─┐┬─┐┌─┐┌─┐┬─┐┌─┐
+  │  ├┤   │  │ ││││││││ │   ├─┘├┬┘│ │├─┘├┬┘├┤
+  ┴─┘└─┘  └─┘└─┘┴ ┴┴ ┴┴ ┴   ┴  ┴└─└─┘┴  ┴└─└─┘ by frontBOI
+  ⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜
+
+? Sélectionne le type de ton commit: (Use arrow keys)
+❯ feature           ✨  Introduction d'une nouvelle feature
+  fix               🐛  Résolution de bug
+  test              🧪  Ajout de test
+  release           🏷️  Release / version tags
+  perf              ⚡️  Amélioration de performances
+  hotfix            🚑  Hotfix
 ```
 
 ## Install
 
+I recommend installing this packaging locally, so that you can customize it project wise.
+**Please note that you need to install [commitizen] in order to use this package.**
+
 **Globally**
 
 ```bash
-npm install --global cz-frontboi
+npm i -g commitizen
+npm i -g cz-frontboi
 
 # set as default adapter for your projects
 echo '{ "path": "cz-frontboi" }' > ~/.czrc
@@ -25,32 +37,49 @@ echo '{ "path": "cz-frontboi" }' > ~/.czrc
 **Locally**
 
 ```bash
+npm install --save-dev commitizen
 npm install --save-dev cz-frontboi
 ```
 
-Add this to your `package.json`:
+Then, add this to your `package.json`:
 
 ```json
 "config": {
   "commitizen": {
-    "path": "cz-frontboi"
+    "path": "@frontboi/cz-frontboi"
   }
 }
 ```
 
 ## Usage
 
+Simply execute commitizen using yarn, and the adapter will take over:
+
 ```sh
 $ yarn cz
 ```
 
+If you wish to use it with npm, add this to your `package.json`:
+
+```json
+"scripts": {
+  "commit": "npx cz"
+}
+```
+
+And then you will be able to call the cz-frontboi's adapter:
+
+```sh
+npm run commit
+```
+
 ## Customization
 
-By default `cz-frontboi` comes ready to run out of the box. Uses may vary, so there are a few configuration options to allow fine tuning for project needs.
+By default `cz-frontboi` comes ready to run out of the box for french teams, including a wide variety of commit types and three scopes (`front`, `back` and `api`). Usages may vary, so there are a few configuration options to allow fine tuning for project needs.
 
 ### How to
 
-Configuring `cz-frontboi` can be handled in the users home directory (`~/.czrc`) for changes to impact all projects or on a per project basis (`package.json`). Simply add the config property as shown below to the existing object in either of the locations with your settings for override.
+Configuring `cz-frontboi` can be handled **in the users home directory** (`~/.czrc`) for changes to impact all projects. It can also be configured **project wise** (`package.json`). Simply add the config property as shown below to the existing object in either of the locations with your settings for override.
 
 ```json
 {
@@ -62,33 +91,27 @@ Configuring `cz-frontboi` can be handled in the users home directory (`~/.czrc`)
 
 ### Configuration Options
 
-By default `cz-frontboi` comes preconfigured with the [Gitmoji](https://gitmoji.carloscuesta.me/) types.
+By default `cz-frontboi` comes preconfigured with a subset of the [Gitmoji](https://gitmoji.carloscuesta.me/) types. Though, feel free to add any of your semantic in the `types.json` file, in which lives all the types available for a commit.
 
 #### Add a type
 
-By default, `cz-frontboi` comes bundled with general purpose types:
-If you ever need to add a type, provide it as a JSON object inside the `types` array property:
+By default, `cz-frontboi` comes bundled with general purpose types.
+If you ever need to add a type, provide it as a JSON object inside the `types` array property (which lives, indeed, inside the `cz-frontboi` property of the top-level `config` property):
 
 ```json
-{
-  "config": {
-    "cz-frontboi": {
-      "types": [
-        {
-          "emoji": "💡",
-          "code": ":bulb:",
-          "description": "Une super nouvelle idée",
-          "name": "Idea"
-        }
-      ]
-    }
-  }
-}
+ "types": [
+   {
+     "emoji": "💡",
+     "code": ":bulb:",
+     "description": "Une super nouvelle idée",
+     "name": "Idea"
+   }
+ ]
 ```
 
 #### Skip Questions
 
-An array of questions you want to skip:
+You can skip native questions that you may find irrelevant. To do so, provide an array of questions you want to skip:
 
 ```json
 {
@@ -100,11 +123,12 @@ An array of questions you want to skip:
 }
 ```
 
-You can skip the following questions: `body` and `scope`. The `type` and `subject` questions are mandatory.
+You can skip the following questions: `body` and `scope`.
+The `type` and `subject` questions are mandatory.
 
 #### Customize Questions
 
-An object that contains an overwrite text of the original questions:
+The way the questions are formulated is highly opinionated, and you can find it unpleasing. Feel free to provide an object that contains an overwrite text of the original questions:
 
 ```json
 {
@@ -120,12 +144,12 @@ An object that contains an overwrite text of the original questions:
 
 #### Customize Scopes
 
-An object that contains some more scopes. The scope is an object that contains two keys:
+A scope is, natively, either `front`, `back` or `api`. You might want to add some more: you can provide an object that contains some more scopes. A scope is an object that must contains these two properties
 
-- name: the text that gets display in the list of scopes (so you may include any emoji inside)
-- value: the value that will be inserted inside the commit message
+- **name**: the text that gets display in the list of scopes (so you may include any emoji inside)
+- **value**: the value that will be inserted inside the commit message
 
-Here is an example:
+It could look something like this:
 
 ```json
 {
