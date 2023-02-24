@@ -33,12 +33,7 @@ async function getConfig() {
     symbol: false,
     skipQuestions: [''],
     subjectMaxLength: 75,
-    scopes: [
-      { name: '💻 front', value: 'front' },
-      { name: '💾 back', value: 'back' },
-      { name: '📦 CI/CD', value: 'CI/CD' }
-    ],
-    format: '{emoji} {type} {scope}: {subject}'
+    format: '{emoji} {type}{scope}: {subject}'
   }
 
   const loadedConfig =
@@ -53,7 +48,7 @@ async function getConfig() {
     types: loadedConfig.overrideTypes
       ? loadedConfig.types ?? []
       : [...defaultConfig.types, ...(loadedConfig.types ?? [])],
-    scopes: [...defaultConfig.scopes, ...(loadedConfig.scopes ?? [])]
+    scopes: loadedConfig.scopes
   }
 
   return config
@@ -73,6 +68,10 @@ function getEmojiChoices({ types, symbol }) {
     },
     code: choice.code
   }))
+}
+
+async function requiredField(input) {
+  return input.length === 0 ? 'Il faut renseigner une valeur' : true
 }
 
 /**
@@ -96,21 +95,23 @@ function createQuestions(config) {
       name: 'scope',
       message:
         config.questions && config.questions.scope ? config.questions.scope : 'Renseigne le scope de ton commit:',
-      choices: config.scopes.map(scope => scope.name),
+      choices: config.scopes && config.scopes.map(scope => scope.name),
       when: !config.skipQuestions.includes('scope')
     },
     {
       type: 'maxlength-input',
       name: 'subject',
       message: config.questions && config.questions.subject ? config.questions.subject : 'Sujet de ton commit:',
-      maxLength: config.subjectMaxLength
+      maxLength: config.subjectMaxLength,
+      validate: requiredField
     },
     {
       type: 'input',
       name: 'body',
       message:
         config.questions && config.questions.body ? config.questions.body : 'Fournis une description pour ton commit:',
-      when: !config.skipQuestions.includes('body')
+      when: !config.skipQuestions.includes('body'),
+      validate: requiredField
     }
   ]
 }
@@ -128,7 +129,11 @@ function formatCommitMessage(answers, config) {
 
   const emoji = config.types.find(type => type.code === answers.type.emoji).emoji
   const type = answers.type.name
-  const scope = answers.scope ? '(' + config.scopes.find(scope => scope.name === answers.scope).value.trim() + ')' : ''
+  const scope = answers.scope
+    ? config.scopes
+      ? `(${config.scopes.find(scope => scope.name === answers.scope).value.trim()})`
+      : `(${answers.scope})`
+    : ''
   const subject = answers.subject.trim()
 
   const commitMessage = config.format

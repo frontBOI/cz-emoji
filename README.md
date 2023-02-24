@@ -117,7 +117,7 @@ You can choose to only keep the types you declared and discard the native ones b
 {
   "config": {
     "cz-frontboi": {
-      "types": [ "your own types here" ]
+      "types": ["your own types here"],
       "overrideTypes": true
     }
   }
@@ -159,7 +159,7 @@ The way the questions are formulated is highly opinionated, and you can find it 
 
 #### Customize Scopes
 
-A scope is, natively, either `front`, `back` or `api`. You might want to add some more: you can provide an object that contains some more scopes. A scope is an object that must contains these two properties
+A scope provides additional contextual information (such as which generale functionality is impacted). By default, **scopes are prompted by an input in which the developer enters his text**. But you can provide an array that contains a scope list from which the developer will have to select his commit scope. A scope is declared as an object with two mandatory properties:
 
 - **name**: the text that gets display in the list of scopes (so you may include any emoji inside)
 - **value**: the value that will be inserted inside the commit message
@@ -170,7 +170,11 @@ It could look something like this:
 {
   "config": {
     "cz-frontboi": {
-      "scopes": [{ "name": "🕹️ API", "value": "API" }]
+      "scopes": [
+        { "name": "💻 front", "value": "front" },
+        { "name": "💾 back", "value": "back" },
+        { "name": "📦 CI/CD", "value": "CI/CD" }
+      ]
     }
   }
 }
