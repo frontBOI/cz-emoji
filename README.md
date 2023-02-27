@@ -28,17 +28,17 @@ I recommend installing this packaging locally, so that you can customize it proj
 
 ```bash
 npm i -g commitizen
-npm i -g cz-frontboi
+npm i -g @frontboi/cz-frontboi
 
 # set as default adapter for your projects
-echo '{ "path": "cz-frontboi" }' > ~/.czrc
+echo '{ "path": "@frontboi/cz-frontboi" }' > ~/.czrc
 ```
 
 **Locally**
 
 ```bash
 npm install --save-dev commitizen
-npm install --save-dev cz-frontboi
+npm install --save-dev @frontboi/cz-frontboi
 ```
 
 Then, add this to your `package.json`:
@@ -53,13 +53,14 @@ Then, add this to your `package.json`:
 
 ## Usage
 
-Simply execute commitizen using yarn, and the adapter will take over:
+Globally, simply execute this command:
 
 ```sh
-$ yarn cz
+$ cz
 ```
 
-If you wish to use it with npm, add this to your `package.json`:
+Locally, execute the same commande but using yarn, and the adapter will take over: `yarn cz`
+If you wish to use npm, add this to your `package.json`:
 
 ```json
 "scripts": {
