@@ -1,6 +1,6 @@
 {
   "name": "@frontboi/cz-frontboi",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Commitizen custom adapter formatting commit messages using emojis.",
   "author": "Tom Blanchet <contact@tomblanchet.fr> (https://tomblanchet.fr)",
   "license": "MIT",

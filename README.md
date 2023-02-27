@@ -125,6 +125,20 @@ You can choose to only keep the types you declared and discard the native ones b
 }
 ```
 
+#### Remove a type
+
+To remove a type, simply add its name inside the `skipTypes` array. For exemple, if you want to skip both the feat and fix types, simply add them like this:
+
+```json
+{
+  "config": {
+    "cz-frontboi": {
+      "skipTypes": ["feat", "fix"]
+    }
+  }
+}
+```
+
 #### Skip Questions
 
 You can skip native questions that you may find irrelevant. To do so, provide an array of questions you want to skip:

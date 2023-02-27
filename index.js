@@ -42,12 +42,18 @@ async function getConfig() {
     (await loadConfig(path.join(homedir(), '.czrc'))) ||
     {}
 
+  const allTypes = loadedConfig.overrideTypes
+    ? loadedConfig.types ?? []
+    : [...defaultConfig.types, ...(loadedConfig.types ?? [])]
+
+  const filteredTypes = allTypes.filter(type =>
+    loadedConfig.skipTypes ? !loadedConfig.skipTypes.includes(type.name) : true
+  )
+
   const config = {
     ...defaultConfig,
     ...loadedConfig,
-    types: loadedConfig.overrideTypes
-      ? loadedConfig.types ?? []
-      : [...defaultConfig.types, ...(loadedConfig.types ?? [])],
+    types: filteredTypes,
     scopes: loadedConfig.scopes
   }
 
