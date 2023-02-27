@@ -110,8 +110,7 @@ function createQuestions(config) {
       name: 'body',
       message:
         config.questions && config.questions.body ? config.questions.body : 'Fournis une description pour ton commit:',
-      when: !config.skipQuestions.includes('body'),
-      validate: requiredField
+      when: !config.skipQuestions.includes('body')
     }
   ]
 }
