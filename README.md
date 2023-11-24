@@ -14,6 +14,7 @@ This tool has been explicitely and purposefully made for french people 🇫🇷
 ❯ feature           ✨  Introduction d'une nouvelle feature
   fix               🐛  Résolution de bug
   test              🧪  Ajout de test
+  CI/CD             🦊  Modification de la CI/CD
   release           🏷️  Release / version tags
   perf              ⚡️  Amélioration de performances
   hotfix            🚑  Hotfix
