@@ -2,13 +2,13 @@
   {
     "emoji": "✨",
     "code": ":sparkles:",
-    "description": "Introduction d'une nouvelle feature",
+    "description": "Introduction d'une nouvelle fonctionnalité",
     "name": "feat"
   },
   {
     "emoji": "🐛",
     "code": ":bug:",
-    "description": "Résolution de bug",
+    "description": "Correction de bug",
     "name": "fix"
   },
   {
@@ -16,6 +16,12 @@
     "code": ":test_tube:",
     "description": "Ajout de test",
     "name": "test"
+  },
+  {
+    "emoji": "🦊",
+    "code": ":fox:",
+    "description": "Modification de la CI/CD",
+    "name": "CI/CD"
   },
   {
     "emoji": "🏷️",
