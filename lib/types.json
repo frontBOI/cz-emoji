@@ -6,10 +6,16 @@
     "name": "feat"
   },
   {
-    "emoji": "🐛",
-    "code": ":bug:",
+    "emoji": "🩹",
+    "code": ":adhesive_bandage:",
     "description": "Correction de bug",
     "name": "fix"
+  },
+  {
+    "emoji": "🦊",
+    "code": ":fox:",
+    "description": "Modification de la CI",
+    "name": "ci"
   },
   {
     "emoji": "🧪",
@@ -18,22 +24,16 @@
     "name": "test"
   },
   {
-    "emoji": "🦊",
-    "code": ":fox:",
-    "description": "Modification de la CI/CD",
-    "name": "CI/CD"
+    "emoji": "🧰",
+    "code": ":toolbox:",
+    "description": "Changements affectant le système de build ou les dépendances",
+    "name": "build"
   },
   {
-    "emoji": "🐳",
-    "code": ":whale:",
-    "description": "Développement relatif à Docker",
-    "name": "docker"
-  },
-  {
-    "emoji": "🏷️",
-    "code": ":label:",
-    "description": "Release / version tags",
-    "name": "release"
+    "emoji": "📝",
+    "code": ":pencil:",
+    "description": "Documentation",
+    "name": "docs"
   },
   {
     "emoji": "⚡️",
@@ -42,33 +42,15 @@
     "name": "perf"
   },
   {
-    "emoji": "🚑",
-    "code": ":ambulance:",
-    "description": "Hotfix",
-    "name": "hotfix"
+    "emoji": "🪓",
+    "code": ":axe:",
+    "description": "Du code qui ne corrige ni n'ajoute une fonctionnalité",
+    "name": "refactor"
   },
   {
-    "emoji": "📝",
-    "code": ":pencil:",
-    "description": "Rédaction de documentation",
-    "name": "docs"
-  },
-  {
-    "emoji": "🔒",
-    "code": ":lock:",
-    "description": "Sécurité et auth",
-    "name": "security"
-  },
-  {
-    "emoji": "♻️",
-    "code": ":recycle:",
-    "description": "Refactoring de code",
-    "name": "refactoring"
-  },
-  {
-    "emoji": "🏗",
-    "code": ":building_construction:",
-    "description": "Architecture de code",
-    "name": "arch"
+    "emoji": "💄",
+    "code": ":lipstick:",
+    "description": "Changements n'affectant pas la sémantique du code (espaces, formattage, points-virugle manquants...)",
+    "name": "style"
   }
 ]

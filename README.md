@@ -1,48 +1,43 @@
 # cz-frontboi
 
-FrontBOI's [commitizen] adapter is THE way to go to use custom commit message using emojis. _Plus besoin de se prendre la tête en équipe !_
+Cet adapteur de [commitizen] ajoute des émoticônes et personnalise l'affichage pour simplifier les tâches de commit. Il a été pensé pour suivre à la lettre les spécifications des conventions de commit, toutefois il offre une palette de personnalisation vous permettant de l'adapter à votre manière de travailler.
+_Plus besoin de se prendre la tête en équipe !_
 
-This tool has been explicitely and purposefully made for french people 🇫🇷
+> Cet outil a été spécialement créé pour les équipes françaises !
 
 ```sh
-  ┬  ┌─┐  ┌─┐┌─┐┌┬┐┌┬┐┬┌┬┐  ┌─┐┬─┐┌─┐┌─┐┬─┐┌─┐
-  │  ├┤   │  │ ││││││││ │   ├─┘├┬┘│ │├─┘├┬┘├┤
-  ┴─┘└─┘  └─┘└─┘┴ ┴┴ ┴┴ ┴   ┴  ┴└─└─┘┴  ┴└─└─┘ by frontBOI
-  ⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜
+██╗     ███████╗     ██████╗ ██████╗ ███╗   ███╗███╗   ███╗██╗████████╗    ██████╗ ██████╗  ██████╗ ██████╗ ██████╗ ███████╗
+██║     ██╔════╝    ██╔════╝██╔═══██╗████╗ ████║████╗ ████║██║╚══██╔══╝    ██╔══██╗██╔══██╗██╔═══██╗██╔══██╗██╔══██╗██╔════╝
+██║     █████╗      ██║     ██║   ██║██╔████╔██║██╔████╔██║██║   ██║       ██████╔╝██████╔╝██║   ██║██████╔╝██████╔╝█████╗
+██║     ██╔══╝      ██║     ██║   ██║██║╚██╔╝██║██║╚██╔╝██║██║   ██║       ██╔═══╝ ██╔══██╗██║   ██║██╔═══╝ ██╔══██╗██╔══╝
+███████╗███████╗    ╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║██║   ██║       ██║     ██║  ██║╚██████╔╝██║     ██║  ██║███████╗
+╚══════╝╚══════╝     ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚═╝   ╚═╝       ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝  ╚═╝╚══════╝
+⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜
+frontBOI - 1.2.0
 
-? Sélectionne le type de ton commit: (Use arrow keys)
-❯ feature           ✨  Introduction d'une nouvelle feature
-  fix               🐛  Résolution de bug
-  test              🧪  Ajout de test
-  CI/CD             🦊  Modification de la CI/CD
-  release           🏷️  Release / version tags
-  perf              ⚡️  Amélioration de performances
-  hotfix            🚑  Hotfix
+? Type de commit: (Use arrow keys)
+❯ feat      ✨  Introduction d'une nouvelle fonctionnalité
+  fix       🩹  Correction de bug
+  ci        🦊  Modification de la CI
+  test      🧪  Ajout de test
+  build     🧰  Changements affectant le système de build ou les dépendances
+  docs      📝  Documentation
+  perf      ⚡️  Amélioration de performances
 ```
 
-## Install
+# Installation
 
-I recommend installing this packaging locally, so that you can customize it project wise.
-**Please note that you need to install [commitizen] in order to use this package.**
+Je recommande d'installer ce package en local, pour vous permettre de le personnaliser sur chaque projet.
+**Notez bien qu'il est nécessaire d'installer [commitizen] pour que ce package fonctionne.**
 
-**Globally**
-
-```bash
-npm i -g commitizen
-npm i -g @frontboi/cz-frontboi
-
-# set as default adapter for your projects
-echo '{ "path": "@frontboi/cz-frontboi" }' > ~/.czrc
-```
-
-**Locally**
+### En local
 
 ```bash
 npm install --save-dev commitizen
 npm install --save-dev @frontboi/cz-frontboi
 ```
 
-Then, add this to your `package.json`:
+Ensuite, ajouter cette configuration à votre `package.json`:
 
 ```json
 "config": {
@@ -52,16 +47,41 @@ Then, add this to your `package.json`:
 }
 ```
 
-## Usage
+### Globalement
 
-Globally, simply execute this command:
+Vous pouvez aussi choisir d'installer `cz-frontboi` globalement sur votre machine, afin de profiter de la configuration sur l'ensemble de vos projets.
+
+```bash
+npm i -g commitizen
+npm i -g @frontboi/cz-frontboi
+
+# le définir en tant qu'adapteur par défaut pour vos projets
+echo '{ "path": "@frontboi/cz-frontboi" }' > ~/.czrc
+```
+
+# Usage
+
+### Global
+
+Si vous avez installé `cz-frontboi` globalement, vous n'avez qu'à exécuter cette commande
 
 ```sh
 $ cz
 ```
 
-Locally, execute the same commande but using yarn, and the adapter will take over: `yarn cz`
-If you wish to use npm, add this to your `package.json`:
+### Local
+
+#### yarn
+
+Vous l'avez installé localement ? Il faut exécuter la même commande mais via yarn; ainsi, l'adapteur prendra le relai:
+
+```bash
+yarn cz
+```
+
+#### npm
+
+Si vous désirez toutefois utiliser npm, ajoutez ceci à votre `package.json`:
 
 ```json
 "scripts": {
@@ -69,19 +89,25 @@ If you wish to use npm, add this to your `package.json`:
 }
 ```
 
-And then you will be able to call the cz-frontboi's adapter:
+Et ensuite, l'adapteur prendra le relai en jouant cette commande:
 
 ```sh
 npm run commit
 ```
 
-## Customization
+# Personnalisation
 
-By default `cz-frontboi` comes ready to run out of the box for french teams, including a wide variety of commit types and three scopes (`front`, `back` and `api`). Usages may vary, so there are a few configuration options to allow fine tuning for project needs.
+Par défault, `cz-frontboi` est livré prêt à fonctionner pour les équipes françaises, garni de tous les types de commit offerts par [la nomenclature Angular](https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines). Votre utilisation peut toutefois varier: j'offre donc quelques options de configuration.
 
-### How to
+## Comment faire ?
 
-Configuring `cz-frontboi` can be handled **in the users home directory** (`~/.czrc`) for changes to impact all projects. It can also be configured **project wise** (`package.json`). Simply add the config property as shown below to the existing object in either of the locations with your settings for override.
+La configuration de `cz-frontboi` peut être gérée directement **dans le répertoire personnel de l'utilisateur** via le fichier de configuration dédié `~/.czrc`. Si il n'existe pas encore, créez-le de cette manière:
+
+```bash
+touch ~/.czrc
+```
+
+Ce fichier permet de configurer l'outil sur tous les projets. Il peut aussi être configuré **par projet** (via le `package.json` du projet). Ajoutez simplement la propriété config comme indiqué ci-dessous à l'objet existant avec vos paramètres pour les remplacer.
 
 ```json
 {
@@ -91,14 +117,13 @@ Configuring `cz-frontboi` can be handled **in the users home directory** (`~/.cz
 }
 ```
 
-### Configuration Options
+## Options de configuration
 
-By default `cz-frontboi` comes preconfigured with a subset of the [Gitmoji](https://gitmoji.carloscuesta.me/) types. Though, feel free to add any of your semantic in the `types.json` file, in which lives all the types available for a commit.
+Par défaut, `cz-frontboi` est préconfiguré avec un sous-ensemble de types liés à des émoticônes choisis selon mes préférenecs. Vous pouvez voir ces configurations dans le fichier `types.json`, dans lequel se trouvent tous les types disponibles pour un commit.
 
-#### Add a type
+### Ajouter un type de commit
 
-By default, `cz-frontboi` comes bundled with general purpose types.
-If you ever need to add a type, provide it as a JSON object inside the `types` array property (which lives, indeed, inside the `cz-frontboi` property of the top-level `config` property):
+Si vous avez besoin d'ajouter un type, renseignez-le en tant qu'objet JSON dans un tableau à l'intérieur du champ `types` (qui se trouve dans le champ de personnalisation `config`):
 
 ```json
 {
@@ -113,22 +138,22 @@ If you ever need to add a type, provide it as a JSON object inside the `types` a
 }
 ```
 
-You can choose to only keep the types you declared and discard the native ones by setting the `overrideTypes` property to `true`:
+Vous pouvez choisir de ne conserver que les types que vous avez déclarés et d'écarter les types natifs en renseignant la propriété `overrideNativeTypes` à `true` :
 
 ```json
 {
   "config": {
     "cz-frontboi": {
-      "types": ["your own types here"],
-      "overrideTypes": true
+      "types": ["vos propres types ici"],
+      "overrideNativeTypes": true
     }
   }
 }
 ```
 
-#### Remove a type
+### Supprimer un type
 
-To remove a type, simply add its name inside the `skipTypes` array. For exemple, if you want to skip both the feat and fix types, simply add them like this:
+Pour supprimer un type, ajouter son nom dans le champ `skipTypes`. Par exemple si vous souhaitez supprimer les types feat et fix, ajoutez-les de cette manière:
 
 ```json
 {
@@ -140,47 +165,54 @@ To remove a type, simply add its name inside the `skipTypes` array. For exemple,
 }
 ```
 
-#### Skip Questions
+### Supprimer une questions
 
-You can skip native questions that you may find irrelevant. To do so, provide an array of questions you want to skip:
+Vous pouvez ignorer les questions par défaut que vous jugez non pertinentes. Pour ce faire, indiquez la ou les questions que vous souhaitez ignorer:
 
 ```json
 {
   "config": {
     "cz-frontboi": {
-      "skipQuestions": ["body", "scope"]
+      "skipQuestions": ["breaking_change", "scope"]
     }
   }
 }
 ```
 
-You can skip the following questions: `body` and `scope`.
-The `type` and `subject` questions are mandatory.
+Voici les questions disponibles par défaut:
 
-#### Customize Questions
+- **type**: type de commit
+- **scope**: cadre général du commit
+- **subject**: sujet du commit
+- **breaking_change**: permet de renseigner si le commit comprend un changement majeur.
 
-The way the questions are formulated is highly opinionated, and you can find it unpleasing. Feel free to provide an object that contains an overwrite text of the original questions:
+Vous pouvez ignorer les questions `breaking_change` et `scope`.
+Les questions `type` et `subject` sont obligatoires.
+
+### Personnaliser les questions
+
+La façon dont les questions sont formulées est fortement influencée par mon opinion, et vous pouvez la trouver déplacée. N'hésitez pas à fournir un objet qui contient un texte de remplacement des questions originales :
 
 ```json
 {
   "config": {
     "cz-frontboi": {
       "questions": {
-        "body": "This will be displayed instead of original text"
+        "breaking_change": "This will be displayed instead of original text"
       }
     }
   }
 }
 ```
 
-#### Customize Scopes
+### Personnaliser les scopes
 
-A scope provides additional contextual information (such as which generale functionality is impacted). By default, **scopes are prompted by an input in which the developer enters his text**. But you can provide an array that contains a scope list from which the developer will have to select his commit scope. A scope is declared as an object with two mandatory properties:
+Un scope fournit des informations contextuelles supplémentaires (telles que la fonctionnalité générale concernée). Par défaut, les **scopes sont entrés par un input dans lequel le développeur saisit son texte**. Vous pouvez cependant fournir un tableau qui contient une liste de scopes à partir de laquelle le développeur pourra sélectionner son scope. Un scope est déclaré comme un objet avec deux propriétés obligatoires :
 
-- **name**: the text that gets display in the list of scopes (so you may include any emoji inside)
-- **value**: the value that will be inserted inside the commit message
+- **nom** : le texte qui sera affiché dans la liste des scopes.
+- **value** : la valeur qui sera insérée dans le message de commit.
 
-It could look something like this:
+Voici un exemple:
 
 ```json
 {
@@ -196,9 +228,7 @@ It could look something like this:
 }
 ```
 
-#### Customize the subject max length
-
-The maximum length you want your subject has
+### Personnaliser la longueur maximale du sujet
 
 ```json
 {
@@ -210,7 +240,7 @@ The maximum length you want your subject has
 }
 ```
 
-## License
+## Licence
 
 MIT © [Tom Blanchet](https://tomblanchet.fr)
 
