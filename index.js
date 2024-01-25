@@ -42,7 +42,7 @@ async function getConfig() {
     (await loadConfig(path.join(homedir(), '.czrc'))) ||
     {}
 
-  const allTypes = loadedConfig.overrideTypes
+  const allTypes = loadedConfig.overrideNativeTypes
     ? loadedConfig.types ?? []
     : [...defaultConfig.types, ...(loadedConfig.types ?? [])]
 
@@ -94,29 +94,27 @@ function createQuestions(config) {
       type: 'list',
       name: 'type',
       choices: getEmojiChoices(config),
-      message: config.questions && config.questions.type ? config.questions.type : 'Sélectionne le type de ton commit:'
+      message: config.questions && config.questions.type ? config.questions.type : 'Type de commit:'
     },
     {
       type: config.scopes ? 'list' : 'input',
       name: 'scope',
-      message:
-        config.questions && config.questions.scope ? config.questions.scope : 'Renseigne le scope de ton commit:',
+      message: config.questions && config.questions.scope ? config.questions.scope : 'Cadre du commit (optionnel):',
       choices: config.scopes && config.scopes.map(scope => scope.name),
       when: !config.skipQuestions.includes('scope')
     },
     {
       type: 'maxlength-input',
       name: 'subject',
-      message: config.questions && config.questions.subject ? config.questions.subject : 'Sujet de ton commit:',
+      message: config.questions && config.questions.subject ? config.questions.subject : 'Sujet du commit:',
       maxLength: config.subjectMaxLength,
       validate: requiredField
     },
     {
       type: 'input',
-      name: 'body',
-      message:
-        config.questions && config.questions.body ? config.questions.body : 'Fournis une description pour ton commit:',
-      when: !config.skipQuestions.includes('body')
+      name: 'breaking_change',
+      message: config.questions && config.questions.body ? config.questions.body : 'Breaking change ? (y/N):',
+      when: !config.skipQuestions.includes('breaking_change')
     }
   ]
 }
@@ -132,27 +130,34 @@ function createQuestions(config) {
 function formatCommitMessage(answers, config) {
   const { columns } = process.stdout
 
-  const emoji = config.types.find(type => type.code === answers.type.emoji).emoji
   const type = answers.type.name
-  const scope = answers.scope
-    ? config.scopes
-      ? `(${config.scopes.find(scope => scope.name === answers.scope).value.trim()})`
-      : `(${answers.scope})`
-    : ''
   const subject = answers.subject.trim()
+  const hasBreakingChange = answers.breaking_change === 'y'
+  const emoji = config.types.find(type => type.code === answers.type.emoji).emoji
+
+  let scope = ''
+  if (answers.scope) {
+    if (config.scopes) {
+      scope = `(${config.scopes.find(scope => scope.name === answers.scope).value.trim()})`
+    } else {
+      scope = `(${answers.scope})`
+    }
+  }
+
+  // ajout du breaking change si nécessaire
+  if (hasBreakingChange) {
+    scope += '!'
+  }
 
   const commitMessage = config.format
     .replace(/{emoji}/g, emoji)
     .replace(/{type}/g, type)
     .replace(/{scope}/g, scope)
     .replace(/{subject}/g, subject)
-    // Only allow at most one whitespace.
-    // When an optional field (ie. `scope`) is not specified, it can leave several consecutive
-    // white spaces in the final message.
     .replace(/\s+/g, ' ')
 
   const head = truncate(commitMessage, columns)
-  const body = wrap(answers.body || '', columns)
+  const body = '' // si tu veux ajouter le body, ça se fera par ici (et donc en posant une question supplémentaire)
 
   return [head, body]
     .filter(Boolean)
@@ -175,9 +180,11 @@ async function promptCommitMessage(cz) {
   ██║     █████╗      ██║     ██║   ██║██╔████╔██║██╔████╔██║██║   ██║       ██████╔╝██████╔╝██║   ██║██████╔╝██████╔╝█████╗  
   ██║     ██╔══╝      ██║     ██║   ██║██║╚██╔╝██║██║╚██╔╝██║██║   ██║       ██╔═══╝ ██╔══██╗██║   ██║██╔═══╝ ██╔══██╗██╔══╝  
   ███████╗███████╗    ╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║██║   ██║       ██║     ██║  ██║╚██████╔╝██║     ██║  ██║███████╗
-  ╚══════╝╚══════╝     ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚═╝   ╚═╝       ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝  ╚═╝╚══════╝ by frontBOI (v1.1.1)
+  ╚══════╝╚══════╝     ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚═╝   ╚═╝       ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝  ╚═╝╚══════╝ 
   ⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜
+  frontBOI - 1.2.0
   `)
+
   const config = await getConfig()
   const questions = createQuestions(config)
   const answers = await cz.prompt(questions)
