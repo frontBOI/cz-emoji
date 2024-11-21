@@ -1,13 +1,14 @@
 {
   "name": "@frontboi/cz-frontboi",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Commitizen avec des emojis et pour les français 🇫🇷",
   "author": "Tom Blanchet <contact@tomblanchet.fr> (https://tomblanchet.fr)",
   "license": "MIT",
   "main": "index.js",
   "files": [
     "index.js",
-    "lib/types.json"
+    "lib/types.json",
+    "utils.js"
   ],
   "repository": {
     "type": "git",

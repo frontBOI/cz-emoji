@@ -1,6 +1,8 @@
 const { exec } = require('child_process')
 const util = require('util')
 const execPromise = util.promisify(exec)
+const path = require('path')
+const fs = require('fs')
 
 /**
  * Récupère le nom de la branche git actuelle.
@@ -18,6 +20,17 @@ async function getCurrentBranchName() {
   }
 }
 
+/**
+ * Lis le fichier package.json et retourne la version du package.
+ * @returns {String} la version du package
+ */
+function getPackageVersion() {
+  const packageJsonPath = path.join(__dirname, 'package.json')
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
+  return packageJson.version
+}
+
 module.exports = {
-  getCurrentBranchName
+  getCurrentBranchName,
+  getPackageVersion
 }
