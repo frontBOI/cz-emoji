@@ -1,65 +1,80 @@
 const findUp = require('find-up')
-const fs = require('fs')
 const homedir = require('homedir')
 const truncate = require('cli-truncate')
-const wrap = require('wrap-ansi')
 const path = require('path')
-const util = require('util')
 const pad = require('pad')
 
 const types = require('./lib/types')
+const { getCurrentBranchName } = require('./utils')
+const { readFile } = require('fs/promises')
 
-const readFile = util.promisify(fs.readFile)
-
-function loadConfig(filename) {
-  return readFile(filename, 'utf8')
-    .then(JSON.parse)
-    .then(obj => obj && obj.config && obj.config['cz-frontboi'])
-    .catch(() => null)
+/**
+ * Charge la configuration depuis un fichier
+ * @param {string} filename le nom du fichier à partir duquel on charge la configuration
+ * @returns la configuration ou null si le fichier n'existe pas
+ */
+async function loadConfig(filename) {
+  try {
+    const file = await readFile(filename, 'utf8')
+    const parsedFile = JSON.parse(file)
+    return parsedFile.config?.['cz-frontboi'] || null
+  } catch (e) {
+    console.warn(e)
+    return null
+  }
 }
 
-function loadConfigUpwards(filename) {
+/**
+ * Parcours les répertoires à partir du répertoire courant pour trouver un fichier
+ * @param {string} filename le nom du fichier à partir duquel on charge la configuration
+ * @returns la configuration ou null si le fichier n'existe pas
+ */
+async function loadConfigUpwards(filename) {
   return findUp(filename).then(loadConfig)
 }
 
 /**
- * Read the configuration extracted from either the package.json, .czrc or global .czrc files
- *
- * @param {Object} config the configuration object if it exists, or an empty object
+ * Lis la configuration extraite de package.json, .czrc (local ou global)
+ * @returns {Object} config la configuration extraite, ou une configuration par défaut
  */
 async function getConfig() {
   const defaultConfig = {
     types,
     symbol: false,
     skipQuestions: [''],
-    subjectMaxLength: 75,
-    format: '{emoji} {type}{scope}: {subject}'
+    descriptionMaxLength: 75,
+    format: '{emoji} {type}{scope}: {description}'
   }
 
-  const loadedConfig =
+  const userConfig =
     (await loadConfigUpwards('package.json')) ||
     (await loadConfigUpwards('.czrc')) ||
     (await loadConfig(path.join(homedir(), '.czrc'))) ||
     {}
 
-  const allTypes = loadedConfig.overrideNativeTypes
-    ? loadedConfig.types ?? []
-    : [...defaultConfig.types, ...(loadedConfig.types ?? [])]
+  const allTypes = userConfig.overrideNativeTypes
+    ? userConfig.types || []
+    : [...defaultConfig.types, ...(userConfig.types || [])]
 
   const filteredTypes = allTypes.filter(type =>
-    loadedConfig.skipTypes ? !loadedConfig.skipTypes.includes(type.name) : true
+    userConfig.skipTypes ? !userConfig.skipTypes.includes(type.name) : true
   )
 
   const config = {
     ...defaultConfig,
-    ...loadedConfig,
+    ...userConfig,
     types: filteredTypes,
-    scopes: loadedConfig.scopes
+    scopes: userConfig.scopes
   }
 
   return config
 }
 
+/**
+ * Retourne l'émoji associé à chaque type de commit
+ * @param {object} { type, symbol } les options de configuration
+ * @returns un objet contenant les associations type de commit -> émoji
+ */
 function getEmojiChoices({ types, symbol }) {
   const maxNameLength = types.reduce(
     (maxLength, type) => (type.name.length > maxLength ? type.name.length : maxLength),
@@ -76,39 +91,52 @@ function getEmojiChoices({ types, symbol }) {
   }))
 }
 
+/**
+ * Valide un champ input dont la valeur est requise
+ * @param {string} input la valeur d'input à tester
+ * @returns `true` si l'input est renseigné, sinon un message d'erreur à afficher dans l'input
+ */
 async function requiredField(input) {
   return input.length === 0 ? 'Il faut renseigner une valeur' : true
 }
 
 /**
- * Create inquier.js questions object trying to read `types` and `scopes` from the current project
- * `package.json` falling back to nice default :)
- *
- * @param {Object} config Result of the `getConfig` returned promise
- * @return {Array} Return an array of `inquier.js` questions
- * @private
+ * Crée l'objet inquier.js contenant les différentes questions à poser. Pour ce faire, on va lire les types et scopes
+ * de la configuration courante. Si rien n'est renseigné, des questions savamment choisies seront posées par défaut.
+ * @param {Object} config la configuration extraite d'un des fichiers possibles de configuration
+ * @return {Array} un tableau de questions au format `inquier.js`
  */
-function createQuestions(config) {
+async function createQuestions(config) {
+  const currentGitBranchName = await getCurrentBranchName()
+
   return [
     {
       type: 'list',
       name: 'type',
       choices: getEmojiChoices(config),
-      message: config.questions && config.questions.type ? config.questions.type : 'Type de commit:'
+      message: config.questions?.type || 'Type de commit:'
     },
     {
       type: config.scopes ? 'list' : 'input',
       name: 'scope',
-      message: config.questions && config.questions.scope ? config.questions.scope : 'Cadre du commit (optionnel):',
+      message: config.questions?.scope || 'Cadre du commit (optionnel):',
       choices: config.scopes && config.scopes.map(scope => scope.name),
       when: !config.skipQuestions.includes('scope')
     },
     {
       type: 'maxlength-input',
-      name: 'subject',
-      message: config.questions && config.questions.subject ? config.questions.subject : 'Sujet du commit:',
-      maxLength: config.subjectMaxLength,
+      name: 'description',
+      message: config.questions?.description || 'Description:',
+      maxLength: config.descriptionMaxLength,
       validate: requiredField
+    },
+    {
+      type: 'input',
+      name: 'body',
+      message: config.questions?.body || 'Référence ticket:',
+      validate: requiredField,
+      default: currentGitBranchName,
+      when: !config.skipQuestions.includes('body')
     },
     {
       type: 'input',
@@ -120,20 +148,19 @@ function createQuestions(config) {
 }
 
 /**
- * Format the git commit message from given answers.
- *
- * @param {Object} answers Answers provide by `inquier.js`
- * @param {Object} config Result of the `getConfig` returned promise
- * @return {String} Formatted git commit message
+ * Formate le message de commit git à partir des réponses fournies.
+ * @param {Object} answers réponses récupérées grâce à `inquier.js`
+ * @param {Object} config la configuration extraite d'un des fichiers possibles de configuration
+ * @return {String} le message de commit git formaté
  */
-
 function formatCommitMessage(answers, config) {
   const { columns } = process.stdout
 
   const type = answers.type.name
-  const subject = answers.subject.trim()
+  const description = answers.description.trim()
   const hasBreakingChange = answers.breaking_change === 'y'
   const emoji = config.types.find(type => type.code === answers.type.emoji).emoji
+  const body = answers.body.trim()
 
   let scope = ''
   if (answers.scope) {
@@ -153,23 +180,22 @@ function formatCommitMessage(answers, config) {
     .replace(/{emoji}/g, emoji)
     .replace(/{type}/g, type)
     .replace(/{scope}/g, scope)
-    .replace(/{subject}/g, subject)
+    .replace(/{description}/g, description)
     .replace(/\s+/g, ' ')
 
   const head = truncate(commitMessage, columns)
-  const body = '' // si tu veux ajouter le body, ça se fera par ici (et donc en posant une question supplémentaire)
+  const messageBody = `Ref: ${body}`
 
-  return [head, body]
+  return [head, messageBody]
     .filter(Boolean)
     .join('\n\n')
     .trim()
 }
 
 /**
- * Interactively prompts the git commit message to the user.
- *
- * @param {commitizen} cz Commitizen object
- * @return {String} Git message provided by the user
+ * Affiche de manière interactive les questions à poser à l'utilisateur pour obtenir un message de commit git.
+ * @param {commitizen} cz objet Commitizen
+ * @return {String} le message git formaté selon les questions posées à l'utilisateur
  */
 async function promptCommitMessage(cz) {
   cz.prompt.registerPrompt('maxlength-input', require('inquirer-maxlength-input-prompt'))
@@ -182,11 +208,11 @@ async function promptCommitMessage(cz) {
   ███████╗███████╗    ╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║██║   ██║       ██║     ██║  ██║╚██████╔╝██║     ██║  ██║███████╗
   ╚══════╝╚══════╝     ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚═╝   ╚═╝       ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝  ╚═╝╚══════╝ 
   ⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜
-  frontBOI - 1.2.0
+  frontBOI - 1.3.0
   `)
 
   const config = await getConfig()
-  const questions = createQuestions(config)
+  const questions = await createQuestions(config)
   const answers = await cz.prompt(questions)
   const message = formatCommitMessage(answers, config)
 
@@ -194,8 +220,7 @@ async function promptCommitMessage(cz) {
 }
 
 /**
- * Export an object containing a `prompter` method. This object is used by `commitizen`.
- *
+ * Export un objet contenant une méthode `prompter`, utilisé par `commitizen`
  * @type {Object}
  */
 module.exports = {

@@ -1,9 +1,19 @@
-# cz-frontboi
+<div align='center'>
+    <img src="doc/gif.webp" height="256">
+    <h1 align='center'>cz-frontboi</h1>
+</div>
 
-Cet adapteur de [commitizen] ajoute des émoticônes et personnalise l'affichage pour simplifier les tâches de commit. Il a été pensé pour suivre à la lettre les spécifications des conventions de commit, toutefois il offre une palette de personnalisation vous permettant de l'adapter à votre manière de travailler.
-_Plus besoin de se prendre la tête en équipe !_
-
-> Cet outil a été spécialement créé pour les équipes françaises !
+<div align="center">
+    <img src=https://img.shields.io/badge/Created_by-Tom_Blanchet-blue?color=FED205&style=for-the-badge>
+    <img src=https://img.shields.io/badge/Maintained%20%3F-yes-green.svg?style=for-the-badge>
+</div>
+ 
+<div align="center">
+    <img src=https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white>
+    <a href='https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiFmq2GueKEAxXf_7sIHcONCvcQFnoECBEQAQ&url=https%3A%2F%2Ffr.linkedin.com%2Fin%2Ftom-blanchet&usg=AOvVaw2NyolXUeo7ja8PpF4VNmHt&opi=89978449'>
+    <img src=https://img.shields.io/badge/Tom_Blanchet-0077B5?logo=linkedin&logoColor=white&style=for-the-badge>
+    </a>
+</div>
 
 ```sh
 ██╗     ███████╗     ██████╗ ██████╗ ███╗   ███╗███╗   ███╗██╗████████╗    ██████╗ ██████╗  ██████╗ ██████╗ ██████╗ ███████╗
@@ -25,6 +35,13 @@ frontBOI - 1.2.0
   perf      ⚡️  Amélioration de performances
 ```
 
+Vous souhaitez uniformiser les messages de commit des développeurs de votre équipe ? N'attendez plus et utilisez le ✨commit propre✨.
+
+Cet adapteur de [commitizen] ajoute des émoticônes et personnalise l'affichage pour simplifier les tâches de commit. Il a été pensé pour suivre à la lettre les spécifications des conventions de commit, toutefois il offre une palette de personnalisation vous permettant de l'adapter à votre manière de travailler.
+_Plus besoin de se prendre la tête en équipe !_
+
+> Cet outil a été spécialement créé pour les équipes françaises !
+
 # Installation
 
 Je recommande d'installer ce package en local, pour vous permettre de le personnaliser sur chaque projet.
@@ -37,7 +54,7 @@ npm install --save-dev commitizen
 npm install --save-dev @frontboi/cz-frontboi
 ```
 
-Ensuite, ajouter cette configuration à votre `package.json`:
+Puis ajouter cette configuration à votre `package.json`:
 
 ```json
 "config": {
@@ -59,7 +76,7 @@ npm i -g @frontboi/cz-frontboi
 echo '{ "path": "@frontboi/cz-frontboi" }' > ~/.czrc
 ```
 
-# Usage
+# Utilisation
 
 ### Global
 
@@ -95,11 +112,23 @@ Et ensuite, l'adapteur prendra le relai en jouant cette commande:
 npm run commit
 ```
 
+### Les différentes question
+
+Par défaut, quatre questions répondant aux conventions de commit sont posées au développeur prêt à commiter son travail:
+
+- **type**: type de commit
+- **scope**: cadre général du commit _(optionnel)_
+- **description**: description du commit
+- **body**: **opinionated** le numéro de ticket concerné par le commit (par défault, le nom de la branche git courante)
+- **breaking_change**: permet de renseigner si le commit comprend un changement majeur. _(optionnel)_
+
+Il vous est toutefois largement possible de personnaliser votre expérience `cz-frontboi` en mettant à profit les différentes options proposées ci-dessous...
+
 # Personnalisation
 
 Par défault, `cz-frontboi` est livré prêt à fonctionner pour les équipes françaises, garni de tous les types de commit offerts par [la nomenclature Angular](https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines). Votre utilisation peut toutefois varier: j'offre donc quelques options de configuration.
 
-## Comment faire ?
+### Comment faire ?
 
 La configuration de `cz-frontboi` peut être gérée directement **dans le répertoire personnel de l'utilisateur** via le fichier de configuration dédié `~/.czrc`. Si il n'existe pas encore, créez-le de cette manière:
 
@@ -107,17 +136,27 @@ La configuration de `cz-frontboi` peut être gérée directement **dans le répe
 touch ~/.czrc
 ```
 
-Ce fichier permet de configurer l'outil sur tous les projets. Il peut aussi être configuré **par projet** (via le `package.json` du projet). Ajoutez simplement la propriété config comme indiqué ci-dessous à l'objet existant avec vos paramètres pour les remplacer.
+puis écrivez-y vos personnalisations, par exemple:
+
+```json
+{
+  "skipQuestions": ["body"]
+}
+```
+
+Ce fichier permet de configurer l'outil sur tous les projets. Il peut aussi être configuré **par projet** (soit via un fichier `.czrc` à la racine du projet, soit via le `package.json` du projet). Ajoutez simplement la propriété config comme indiqué ci-dessous à l'objet existant avec vos paramètres pour les remplacer.
 
 ```json
 {
   "config": {
-    "cz-frontboi": {}
+    "cz-frontboi": {
+      "skipQuestions": ["body"]
+    }
   }
 }
 ```
 
-## Options de configuration
+### Options de configuration
 
 Par défaut, `cz-frontboi` est préconfiguré avec un sous-ensemble de types liés à des émoticônes choisis selon mes préférenecs. Vous pouvez voir ces configurations dans le fichier `types.json`, dans lequel se trouvent tous les types disponibles pour un commit.
 
@@ -132,7 +171,7 @@ Si vous avez besoin d'ajouter un type, renseignez-le en tant qu'objet JSON dans 
       "emoji": "💡",
       "code": ":bulb:",
       "description": "Une super nouvelle idée",
-      "name": "Idea"
+      "name": "Idée"
     }
   ]
 }
@@ -153,7 +192,7 @@ Vous pouvez choisir de ne conserver que les types que vous avez déclarés et d'
 
 ### Supprimer un type
 
-Pour supprimer un type, ajouter son nom dans le champ `skipTypes`. Par exemple si vous souhaitez supprimer les types feat et fix, ajoutez-les de cette manière:
+Pour supprimer un type préexistant, ajouter son nom dans le champ `skipTypes`. Par exemple si vous souhaitez supprimer les types feat et fix, ajoutez-les de cette manière:
 
 ```json
 {
@@ -179,15 +218,7 @@ Vous pouvez ignorer les questions par défaut que vous jugez non pertinentes. Po
 }
 ```
 
-Voici les questions disponibles par défaut:
-
-- **type**: type de commit
-- **scope**: cadre général du commit
-- **subject**: sujet du commit
-- **breaking_change**: permet de renseigner si le commit comprend un changement majeur.
-
-Vous pouvez ignorer les questions `breaking_change` et `scope`.
-Les questions `type` et `subject` sont obligatoires.
+❗️ **ATTENTION**: vous ne pouvez pas ignorer la questions `description`; ell est obligatoire.
 
 ### Personnaliser les questions
 
@@ -198,7 +229,7 @@ La façon dont les questions sont formulées est fortement influencée par mon o
   "config": {
     "cz-frontboi": {
       "questions": {
-        "breaking_change": "This will be displayed instead of original text"
+        "breaking_change": "Ce texte sera affiché à la place du texte original"
       }
     }
   }
@@ -207,7 +238,7 @@ La façon dont les questions sont formulées est fortement influencée par mon o
 
 ### Personnaliser les scopes
 
-Un scope fournit des informations contextuelles supplémentaires (telles que la fonctionnalité générale concernée). Par défaut, les **scopes sont entrés par un input dans lequel le développeur saisit son texte**. Vous pouvez cependant fournir un tableau qui contient une liste de scopes à partir de laquelle le développeur pourra sélectionner son scope. Un scope est déclaré comme un objet avec deux propriétés obligatoires :
+Un scope fournit des informations contextuelles supplémentaires (telles que la fonctionnalité générale concernée). Par défaut, les **scopes sont entrés par un input dans lequel le développeur saisi le texte de son choix**. Vous pouvez cependant fournir un tableau qui contient une liste réduite de scopes à partir de laquelle le développeur devra sélectionner son scope. Un scope est déclaré comme un objet avec deux propriétés obligatoires :
 
 - **nom** : le texte qui sera affiché dans la liste des scopes.
 - **value** : la valeur qui sera insérée dans le message de commit.
@@ -228,13 +259,13 @@ Voici un exemple:
 }
 ```
 
-### Personnaliser la longueur maximale du sujet
+### Personnaliser la longueur maximale de la descriotion
 
 ```json
 {
   "config": {
     "cz-frontboi": {
-      "subjectMaxLength": 200
+      "descriptionMaxLength": 200
     }
   }
 }
