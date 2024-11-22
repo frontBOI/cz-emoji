@@ -1,7 +1,7 @@
 {
   "name": "@frontboi/cz-frontboi",
-  "version": "1.3.1",
-  "description": "Commitizen avec des emojis et pour les français 🇫🇷",
+  "version": "1.3.2",
+  "description": "Commitizen esthétique pour les français 🇫🇷",
   "author": "Tom Blanchet <contact@tomblanchet.fr> (https://tomblanchet.fr)",
   "license": "MIT",
   "main": "index.js",
@@ -32,6 +32,7 @@
     "lib": "lib"
   },
   "dependencies": {
+    "chalk": "^4.1.2",
     "cli-truncate": "^1.0.0",
     "find-up": "^5.0.0",
     "homedir": "^0.6.0",

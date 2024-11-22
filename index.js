@@ -1,37 +1,10 @@
-const findUp = require('find-up')
 const homedir = require('homedir')
 const truncate = require('cli-truncate')
 const path = require('path')
 const pad = require('pad')
 
 const types = require('./lib/types')
-const { getCurrentBranchName, getPackageVersion } = require('./utils')
-const { readFile } = require('fs/promises')
-
-/**
- * Charge la configuration depuis un fichier
- * @param {string} filename le nom du fichier à partir duquel on charge la configuration
- * @returns la configuration ou null si le fichier n'existe pas
- */
-async function loadConfig(filename) {
-  try {
-    const file = await readFile(filename, 'utf8')
-    const parsedFile = JSON.parse(file)
-    return parsedFile.config?.['cz-frontboi'] || null
-  } catch (e) {
-    console.warn(e)
-    return null
-  }
-}
-
-/**
- * Parcours les répertoires à partir du répertoire courant pour trouver un fichier
- * @param {string} filename le nom du fichier à partir duquel on charge la configuration
- * @returns la configuration ou null si le fichier n'existe pas
- */
-async function loadConfigUpwards(filename) {
-  return findUp(filename).then(loadConfig)
-}
+const { getCurrentBranchName, loadConfigUpwards, loadConfig, getBigTitle } = require('./utils')
 
 /**
  * Lis la configuration extraite de package.json, .czrc (local ou global)
@@ -160,7 +133,7 @@ function formatCommitMessage(answers, config) {
   const description = answers.description.trim()
   const hasBreakingChange = answers.breaking_change === 'y'
   const emoji = config.types.find(type => type.code === answers.type.emoji).emoji
-  const body = answers.body.trim()
+  const body = answers.body?.trim()
 
   let scope = ''
   if (answers.scope) {
@@ -184,7 +157,7 @@ function formatCommitMessage(answers, config) {
     .replace(/\s+/g, ' ')
 
   const head = truncate(commitMessage, columns)
-  const messageBody = `Ref: ${body}`
+  const messageBody = body ? `Ref: ${body}` : null
 
   return [head, messageBody]
     .filter(Boolean)
@@ -200,18 +173,9 @@ function formatCommitMessage(answers, config) {
 async function promptCommitMessage(cz) {
   cz.prompt.registerPrompt('maxlength-input', require('inquirer-maxlength-input-prompt'))
 
-  console.log(`
-  ██╗     ███████╗     ██████╗ ██████╗ ███╗   ███╗███╗   ███╗██╗████████╗    ██████╗ ██████╗  ██████╗ ██████╗ ██████╗ ███████╗
-  ██║     ██╔════╝    ██╔════╝██╔═══██╗████╗ ████║████╗ ████║██║╚══██╔══╝    ██╔══██╗██╔══██╗██╔═══██╗██╔══██╗██╔══██╗██╔════╝
-  ██║     █████╗      ██║     ██║   ██║██╔████╔██║██╔████╔██║██║   ██║       ██████╔╝██████╔╝██║   ██║██████╔╝██████╔╝█████╗  
-  ██║     ██╔══╝      ██║     ██║   ██║██║╚██╔╝██║██║╚██╔╝██║██║   ██║       ██╔═══╝ ██╔══██╗██║   ██║██╔═══╝ ██╔══██╗██╔══╝  
-  ███████╗███████╗    ╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║██║   ██║       ██║     ██║  ██║╚██████╔╝██║     ██║  ██║███████╗
-  ╚══════╝╚══════╝     ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚═╝   ╚═╝       ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝  ╚═╝╚══════╝ 
-  ⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜
-  frontBOI - ${getPackageVersion()}
-  `)
-
   const config = await getConfig()
+  console.log(getBigTitle(config))
+
   const questions = await createQuestions(config)
   const answers = await cz.prompt(questions)
   const message = formatCommitMessage(answers, config)

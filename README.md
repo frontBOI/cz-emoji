@@ -136,7 +136,7 @@ La configuration de `cz-frontboi` peut être gérée directement **dans le répe
 touch ~/.czrc
 ```
 
-puis écrivez-y vos personnalisations, par exemple:
+puis écrivez-y vos personnalisations en format JSON, par exemple:
 
 ```json
 {
