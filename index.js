@@ -184,7 +184,7 @@ async function promptCommitMessage(cz) {
 }
 
 /**
- * Export un objet contenant une méthode `prompter`, utilisé par `commitizen`
+ * Exporte un objet contenant une méthode `prompter`, utilisé par `commitizen`
  * @type {Object}
  */
 module.exports = {

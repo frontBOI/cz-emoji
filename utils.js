@@ -1,5 +1,4 @@
 const { exec } = require('child_process')
-const { readFile } = require('fs/promises')
 const findUp = require('find-up')
 const util = require('util')
 const execPromise = util.promisify(exec)
@@ -40,15 +39,14 @@ function getPackageVersion() {
  */
 async function loadConfig(filename) {
   try {
-    const file = await readFile(filename, 'utf8')
-    const parsedFile = JSON.parse(file)
+    const file = JSON.parse(fs.readFileSync(filename, 'utf8'))
 
     // parsing général
     let config = null
     if (filename.includes('package.json')) {
-      config = parsedFile.config?.['cz-frontboi'] || null
+      config = file.config?.['cz-frontboi'] || null
     } else {
-      config = parsedFile
+      config = file
     }
 
     // ajout du chemin vers la config pour renseignement dans l'interface plus tard
@@ -69,7 +67,6 @@ async function loadConfig(filename) {
  * @returns la configuration ou null si le fichier n'existe pas
  */
 async function loadConfigUpwards(filename) {
-  console.log(`loading config from ${filename}`)
   return findUp(filename).then(loadConfig)
 }
 

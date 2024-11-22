@@ -130,17 +130,17 @@ Par défault, `cz-frontboi` est livré prêt à fonctionner pour les équipes fr
 
 ### Comment faire ?
 
-La configuration de `cz-frontboi` peut être gérée directement **dans le répertoire personnel de l'utilisateur** via le fichier de configuration dédié `~/.czrc`. Si il n'existe pas encore, créez-le de cette manière:
+La configuration de `cz-frontboi` peut être gérée directement au global **dans le répertoire personnel de l'utilisateur** via le fichier de configuration dédié `~/.czrc`. Si il n'existe pas encore, créez-le de cette manière:
 
 ```bash
 touch ~/.czrc
 ```
 
-puis écrivez-y vos personnalisations en format JSON, par exemple:
+puis écrivez-y cette ligne, nécessaire pour que commitizen fonctionne:
 
 ```json
 {
-  "skipQuestions": ["body"]
+  "path": "@frontboi/cz-frontboi"
 }
 ```
 
@@ -150,7 +150,8 @@ Ce fichier permet de configurer l'outil sur tous les projets. Il peut aussi êtr
 {
   "config": {
     "cz-frontboi": {
-      "skipQuestions": ["body"]
+      "skipQuestions": ["body"],
+      "path": "@frontboi/cz-frontboi"
     }
   }
 }
