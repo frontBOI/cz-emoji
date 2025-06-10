@@ -47,7 +47,7 @@ function getPackageVersion() {
  */
 async function loadConfig(filename) {
   if (!filename || typeof filename !== 'string') {
-    console.warn('loadConfig: filename is undefined or not a string')
+    console.warn(`loadConfig: filename is undefined or not a string (received "${filename}")`)
     return null
   }
 
