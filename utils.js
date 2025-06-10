@@ -17,6 +17,14 @@ async function getCurrentBranchName() {
     }
     return stdout.trim()
   } catch (error) {
+    // si le repo git vient d'être créé, on peut ne pas avoir de branche, donc on retourne une chaîne vide
+    if (
+      error.message.includes('unknown revision or path not in the working tree') ||
+      error.message.includes('not a git repository')
+    ) {
+      return ''
+    }
+
     console.error(`Error getting branch name: ${error}`)
     throw error
   }
@@ -38,6 +46,11 @@ function getPackageVersion() {
  * @returns la configuration ou null si le fichier n'existe pas
  */
 async function loadConfig(filename) {
+  if (!filename || typeof filename !== 'string') {
+    console.warn('loadConfig: filename is undefined or not a string')
+    return null
+  }
+
   try {
     const file = JSON.parse(fs.readFileSync(filename, 'utf8'))
 

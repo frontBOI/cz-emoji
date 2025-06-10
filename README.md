@@ -23,7 +23,7 @@
 ███████╗███████╗    ╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║██║   ██║       ██║     ██║  ██║╚██████╔╝██║     ██║  ██║███████╗
 ╚══════╝╚══════╝     ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚═╝   ╚═╝       ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝  ╚═╝╚══════╝
 ⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜⚜
-frontBOI - 1.2.0
+frontBOI - 1.3.4
 
 ? Type de commit: (Use arrow keys)
 ❯ feat      ✨  Introduction d'une nouvelle fonctionnalité
@@ -260,7 +260,7 @@ Voici un exemple:
 }
 ```
 
-### Personnaliser la longueur maximale de la descriotion
+### Personnaliser la longueur maximale de la description
 
 ```json
 {
