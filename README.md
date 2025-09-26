@@ -112,14 +112,14 @@ Et ensuite, l'adapteur prendra le relai en jouant cette commande:
 npm run commit
 ```
 
-### Les différentes question
+### Les différentes questions
 
 Par défaut, quatre questions répondant aux conventions de commit sont posées au développeur prêt à commiter son travail:
 
 - **type**: type de commit
 - **scope**: cadre général du commit _(optionnel)_
 - **description**: description du commit
-- **body**: **opinionated** le numéro de ticket concerné par le commit (par défault, le nom de la branche git courante)
+- **body**: **opinionated** le numéro de ticket concerné par le commit (par défaut, le nom de la branche git courante)
 - **breaking_change**: permet de renseigner si le commit comprend un changement majeur. _(optionnel)_
 
 Il vous est toutefois largement possible de personnaliser votre expérience `cz-frontboi` en mettant à profit les différentes options proposées ci-dessous...
@@ -130,7 +130,7 @@ Par défault, `cz-frontboi` est livré prêt à fonctionner pour les équipes fr
 
 ### Comment faire ?
 
-La configuration de `cz-frontboi` peut être gérée directement au global **dans le répertoire personnel de l'utilisateur** via le fichier de configuration dédié `~/.czrc`. Si il n'existe pas encore, créez-le de cette manière:
+La configuration de `cz-frontboi` peut être gérée directement au global **dans le répertoire personnel de l'utilisateur** via le fichier de configuration dédié `~/.czrc`. S'il n'existe pas encore, créez-le de cette manière:
 
 ```bash
 touch ~/.czrc
@@ -159,7 +159,7 @@ Ce fichier permet de configurer l'outil sur tous les projets. Il peut aussi êtr
 
 ### Options de configuration
 
-Par défaut, `cz-frontboi` est préconfiguré avec un sous-ensemble de types liés à des émoticônes choisis selon mes préférenecs. Vous pouvez voir ces configurations dans le fichier `types.json`, dans lequel se trouvent tous les types disponibles pour un commit.
+Par défaut, `cz-frontboi` est préconfiguré avec un sous-ensemble de types liés à des émoticônes choisis selon mes préférences. Vous pouvez voir ces configurations dans le fichier `types.json`, dans lequel se trouvent tous les types disponibles pour un commit.
 
 ### Ajouter un type de commit
 
@@ -193,7 +193,7 @@ Vous pouvez choisir de ne conserver que les types que vous avez déclarés et d'
 
 ### Supprimer un type
 
-Pour supprimer un type préexistant, ajouter son nom dans le champ `skipTypes`. Par exemple si vous souhaitez supprimer les types feat et fix, ajoutez-les de cette manière:
+Pour supprimer un type préexistant, ajoutez son nom dans le champ `skipTypes`. Par exemple, si vous souhaitez supprimer les types `feat` et `fix`, ajoutez-les de cette manière :
 
 ```json
 {
@@ -205,9 +205,9 @@ Pour supprimer un type préexistant, ajouter son nom dans le champ `skipTypes`. 
 }
 ```
 
-### Supprimer une questions
+### Supprimer une question
 
-Vous pouvez ignorer les questions par défaut que vous jugez non pertinentes. Pour ce faire, indiquez la ou les questions que vous souhaitez ignorer:
+Vous pouvez ignorer les questions par défaut que vous jugez non pertinentes. Pour ce faire, indiquez la ou les questions que vous souhaitez ignorer :
 
 ```json
 {
@@ -219,7 +219,7 @@ Vous pouvez ignorer les questions par défaut que vous jugez non pertinentes. Po
 }
 ```
 
-❗️ **ATTENTION**: vous ne pouvez pas ignorer la questions `description`; ell est obligatoire.
+❗️ **ATTENTION**: vous ne pouvez pas ignorer la question `description`; elle est obligatoire.
 
 ### Personnaliser les questions
 
